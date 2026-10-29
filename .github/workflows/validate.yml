@@ -25,6 +25,12 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
+      - name: Verify reproducible offline application
+        run: python3 tools/build_app.py --check
+      - name: Install development-only DOM test dependencies
+        run: npm ci --ignore-scripts
+      - name: Exercise offline UI controllers and portable exports
+        run: npm test
       - name: Run integration and cross-language checks
         run: python3 -m unittest discover -s tests -v
       - name: Validate the fictional example

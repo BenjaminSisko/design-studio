@@ -2,7 +2,7 @@
 doc_id: OD-ARCH-006
 title: Design Studio LLM Exchange Guide
 type: guide
-version: 1.0
+version: 2.0
 owner: Design Studio maintainers
 date: 2026-10-29
 classification: UNCLASSIFIED
@@ -11,43 +11,39 @@ classification_color: "#15803d"
 
 # Design Studio LLM exchange
 
-Design Studio keeps the design in canonical JSON. You can edit the design in the
-offline HTML application, exchange files with an LLM, or maintain the JSON source
-in a repository and render a new standalone HTML copy. The same structured model
-drives the equipment, interface, network, service, and diagram views.
+The same canonical JSON model drives standalone editing, diagrams, model-based
+analysis, scenarios, and implementation handoffs. An LLM can propose changes to
+that model through guarded file exchange. Design Studio does not call an LLM
+provider or require a provider key or network connection.
 
-The application does not require a live LLM endpoint, an API key, or a network
-connection. You decide which files to provide to an LLM in an environment
-authorized for their contents. The application exchanges files and previews the
-result; it does not send project information to a provider.
+Read [AGENTS.md](../AGENTS.md) before changing source or project files. The
+[operator guide](README.md) describes the UI. Use fresh context and its machine
+schemas as the authority for required fields, types, enums, and references.
 
-Read the [operator guide](README.md) for the meeting and diagram workflow.
+## Safe editing workflow
 
-## Propose a change through LLM exchange
+1. Open the intended project and scenario. Capture a useful starting revision.
+2. Export **LLM exchange → Export LLM context**, or run CLI `summary` against
+   the current project file.
+3. Give the context and a concrete design request to the LLM. Ask it to use the
+   supplied `changeSetTemplate` and preserve every base guard.
+4. Import the returned proposal. Design Studio checks its project, model
+   fingerprint, scenario scope, complete records, and resulting references.
+5. Review actual before/after values, additions, deletions, findings, and effects
+   on other views. Apply only the intended proposal. Application preserves
+   before/after revisions.
+6. Inspect the resulting diagrams and reports, then export Project JSON or
+   Portable HTML as the reviewed handoff.
 
-Use guarded change sets when asking an LLM to modify a design:
+A change or scenario switch after context export calls for fresh context. Do
+not change a fingerprint to force a stale proposal through. The fingerprint
+protects the starting model; it is not a digital signature or authenticated
+approval.
 
-1. Save the current work and capture a named revision before a substantial change.
-2. Open **LLM exchange** and export the context JSON from the current project.
-3. Give the context and a concrete request to your LLM. Ask for a JSON change set
-   using the provided template, retaining the project ID and base fingerprint.
-4. Import the proposed change set through **LLM exchange**. The application checks
-   that its base matches the current project and model, validates the proposal,
-   and presents the full difference for human review.
-5. Review every addition, edit, deletion, and metadata change. Apply only when the
-   proposed result matches the intended design. Applying records a revision.
-6. Review the updated diagrams and export the resulting project JSON or portable
-   HTML for the next session.
+## Project, context, and proposal envelopes
 
-If the project changed after the context export, export fresh context and ask the
-LLM to regenerate its proposal. Do not change the fingerprint manually to bypass
-the stale-base check. A fingerprint guards against applying a proposal to a
-different starting model; it is not a digital signature or proof of authorship.
-
-## Files and envelopes
-
-Project JSON is a versioned envelope containing the current model and its local
-history:
+An exported project uses the following versioned envelope. Empty objects below
+are illustration placeholders, not complete models:
 
 ```json
 {
@@ -57,307 +53,308 @@ history:
   "revisions": [],
   "activity": [],
   "assets": {},
+  "scenarios": [],
+  "activeScenarioId": "",
+  "baselines": {},
   "savedAt": "2026-10-29T12:00:00.000Z"
 }
 ```
 
-`model` has `schemaVersion: 1`, a `meta` object, and the collection arrays listed
-below. The export may pool embedded evidence in `assets`; preserve those entries
-and their references. Use the application or CLI to load and render the envelope
-instead of rebuilding its attachment or history structures by hand. As with the
-context illustration below, `{}` is a placeholder for actual exported data.
+`model` has `schemaVersion: 1`, `meta`, and collection arrays. Migration adds
+missing collections for older projects. The envelope preserves the active
+model, scenario branches, baseline references to revision snapshots, history,
+and pooled assets. Evidence and custom panel images can be pooled through
+`@asset:` references. Use the application or CLI to load/save the envelope
+rather than reconstructing it by hand. Do not discard unknown existing fields.
 
-An LLM context export has this envelope:
+A context has `format: "opsdeck-design-context"`, version `1`, the current
+`baseProjectId`, `baseFingerprint`, `baseScenarioId`, model, instructions,
+`recordSchemas`, `architectureSchemas`, model findings, baseline context, and a
+`changeSetTemplate`. It is designed for reasoning and proposing changes; it is
+not a replacement project backup. Embedded evidence and custom front-panel image
+bytes are omitted. Never upsert evidence `data` or device `panelImage` with an
+omission marker. Use the actual complete project to preserve those bytes when
+editing an equipment or evidence record.
 
-```json
-{
-  "format": "opsdeck-design-context",
-  "version": 1,
-  "baseProjectId": "COPY_FROM_EXPORTED_CONTEXT",
-  "baseFingerprint": "COPY_FROM_EXPORTED_CONTEXT",
-  "instructions": ["Instructions supplied by Design Studio"],
-  "model": {},
-  "changeSetTemplate": {}
-}
-```
-
-The exported file supplies the actual model, instructions, and change-set
-template. The empty objects above illustrate the envelope only; they are not an
-empty project to submit. Use the exported values exactly. The context contains
-the structured model and attachment captions, with embedded file data replaced
-by omission markers. Project exports carry the actual evidence and history.
-Review either file's contents before transferring it. Do not use context JSON as
-a replacement project or upsert evidence with an omission marker as its data.
-
-The proposed-change envelope is:
+Return a proposal using the exported template:
 
 ```json
 {
   "format": "opsdeck-design-changes",
   "version": 1,
-  "baseProjectId": "COPY_FROM_EXPORTED_CONTEXT",
-  "baseFingerprint": "COPY_FROM_EXPORTED_CONTEXT",
-  "summary": "Describe the intended design changes and remaining questions.",
+  "baseProjectId": "COPY_FROM_CONTEXT",
+  "baseFingerprint": "COPY_FROM_CONTEXT",
+  "baseScenarioId": "COPY_FROM_CONTEXT",
+  "summary": "Explain the proposed design change and unresolved questions.",
   "changes": []
 }
 ```
 
-The `changes` array contains these operations:
+Copy the supplied scenario value exactly, including `""` if there is no active
+branch. A proposal for a different scenario must not be applied merely because
+the two branches currently contain similar records.
 
-| Operation | Shape and meaning |
+| Operation | Meaning |
 | --- | --- |
-| Upsert | `{"op":"upsert","collection":"services","record":{...}}` adds or replaces one complete record by its stable ID. |
-| Delete | `{"op":"delete","collection":"services","id":"existing-id"}` removes the identified record. |
-| Metadata | `{"op":"meta","values":{...}}` updates permitted project metadata. |
+| `{"op":"upsert","collection":"services","record":{...}}` | Add or replace a **complete** record using its stable ID. |
+| `{"op":"delete","collection":"services","id":"existing-id"}` | Delete a record after handling dependent references. |
+| `{"op":"meta","values":{...}}` | Update permitted metadata; `meta.id` cannot change. |
 
-An upsert is a complete record replacement, not a partial field patch. Copy the
-existing record and preserve every field that should survive. For a new record,
-use the canonical fields and valid values from the exported model and template.
-Keep IDs stable when renaming or revising an item so references continue to point
-to the same item.
+Upserts replace entire records, not individual fields. Start from the existing
+record, retain fields that should survive, and include every required key. Add
+linked records within the same proposal. A rename retains its ID. Return plain,
+parseable JSON without Markdown fences, comments, trailing commas, executable
+code, or a parallel YAML format.
 
-Return plain JSON that parses without cleanup: no Markdown fences around the
-submitted file, comments, trailing commas, executable code, or free-form YAML.
-Do not convert the canonical model into a different schema.
+## Schema and references
 
-## Model rules for an LLM
+The context's `recordSchemas` lists complete-record requirements.
+`architectureSchemas`, generated from
+[`src/architecture-schema.json`](../src/architecture-schema.json), supplies field
+types, accepted enums, reference targets, bounds, and optional-reference rules.
+The schema expands the original model with seventeen collections:
 
-Use the exported model as the schema reference. Its property names, IDs, enum
-values, and reference shapes take precedence over prose descriptions or a model
-the LLM remembers from an earlier session.
-
-| Model area | Information to preserve |
+| Collection | Architectural meaning |
 | --- | --- |
-| `meta` | `id`, `name`, `description`, `phase`, `author`, `rackUnits`, `rackName`, `classification`, `classificationColor`. A metadata operation cannot change `id`. |
-| `devices` | `id`, `name`, `type`, `owner`, `status`, `networkId`, `rackU`, `height`, `notes`; imported hosted equipment can also use `hostedBy`, `model`, and `sourceInfo`. |
-| `interfaces` | `id`, `name` (port/interface name), `deviceId`, `networkId`, `address` (IP/CIDR text), `mac`, `speed`, `status`, `notes`. |
-| `networks` | `id`, `name`, `cidr`, `vlan`, `purpose`, `owner`, `status`. |
-| `services` | `id`, `name`, `platform`, `owner`, `status`, `deviceId`, `networkId`, `notes`, `dependsOn` (service IDs); optional configuration strings `kind`, `endpoint`, `protocol`, `port`, `licenseManager`, `redundancy`. |
-| `links` | `id`, `from`, `to`, `fromInterfaceId`, `toInterfaceId`, `label`, `status`; preserve any additional existing notes. |
-| `identity` | `id`, `name`, `serviceId`, `implementation`, `domain`, `realm`, `notes`, `status`. |
-| `groups` | `id`, `name`, `identityId`, `parentId`, `kind`, `memberIds`, `accessIds`, `notes`, `status`. |
-| `dnsZones` | `id`, `name`, `serviceId`, `kind`, `notes`, `status`. |
-| `dnsRecords` | `id`, `name`, `zoneId`, `type`, `value`, `targetId`, `ttl`, `notes`, `status`. |
-| `relationships` | `id`, `from`, `to`, `kind`, `label`, `protocol`, `port`, `endpoint`, `notes`, `status`. |
-| `decisions` | `id`, `title`, `status`, `owner`, `due`, `context`, `options` (`id`, `label`, `pros`, `cons`), `selectedOptionId`, `rationale`, `relatedIds`. |
-| `evidence` | `id`, `name`, `mime`, `data`, `relatedId`, plus existing captions or descriptions. Preserve embedded content or pooled asset references in the source envelope. |
-| `tasks` | `id`, `title`, `owner`, `status`, `due`, `relatedId`. |
-| `comments` | `id`, `entityId`, `author`, `text`, `resolved`, and `createdAt` when present. |
-| `diagrams` | `id`, `name`, `nodeIds`, `notes`, and optional `layout` keyed by node ID with numeric `x` and `y` positions. Custom selections reference model nodes rather than duplicating them. |
+| `racks` | Named rack capacity (`units`), site, and location. |
+| `vrfs` | Routing contexts and optional route distinguishers. |
+| `securityZones` | Named policy boundaries and ownership. |
+| `failureDomains` | Shared dependencies such as power, rack, storage, or switching. |
+| `routes` | Device/context, destination, next hop, interface, and metric. |
+| `serviceInstances` | A capability's deployment, host/network, role, and failure domains. |
+| `endpoints` | Service/instance/interface/network references plus address, DNS name, protocol, port, and role. |
+| `resolverAssignments` | Client and ordered resolver endpoint references with search domains. |
+| `serviceDependencies` | Dependent/required services, dependency kind, and availability rule. |
+| `directoryObjects` | OU/container hierarchy in an identity system. |
+| `principals` | User, service-account, or computer identities. |
+| `accessMappings` | Principal/group → application service, role, resource, and permission. |
+| `flows` | Required interaction, initiating source/interface, destination, protocol/ports, purpose, zones, enforcement, policies, and requirements. |
+| `policies` | Intended source/destination/zone rule, action, protocol/ports, enforcement, rule reference, and owner. |
+| `requirements` | Description, owner, priority, affected records, decisions, and acceptance criteria. |
+| `verificationTests` | Linked requirements/records, procedure, expected/actual result, result state, performer/time, and evidence. |
+| `observations` | As-built field/value, observed item, source, observer/time, and evidence. |
 
-Preserve every additional field already present in an exported record. IDs must
-be unique throughout the model, including decision option IDs. Empty optional
-references use `""`; an interface requires an existing `deviceId`. Link endpoints
-and custom-selection nodes can refer to devices, networks, or services. The
-`status` fields are nonempty strings; retain the team's established labels rather
-than renaming them casually. Due dates use `YYYY-MM-DD` or an empty string.
+The original collections remain: `devices`, `networks`, `interfaces`, `links`,
+`services`, `identity`, `groups`, `dnsZones`, `dnsRecords`, `relationships`,
+`decisions`, `tasks`, `evidence`, `comments`, and `diagrams`. They carry the
+following additions or compatibility rules:
 
-Rack positions and equipment height must fit within the configured rack without
-overlaps. Hosted equipment uses `hostedBy` and does not also occupy rack units.
-Service dependencies and hosted-equipment relationships cannot contain cycles.
-Network CIDR and VLAN entries are validated when present. Interface `address`
-is entered text and does not establish address-allocation or connectivity checks.
+| Area | Rules |
+| --- | --- |
+| Equipment | Preserve `model`, `panelImage`, `rackId`, `deviceKind`, `failureDomainIds`, `hostedBy`, and additional imported fields when present. |
+| Interfaces | Preserve mode, untagged/tagged network IDs, aggregate ID, gateway, MTU, and original port/address fields. |
+| Networks | Preserve routing-context ID, security-zone ID, gateway, CIDR/VLAN, and original metadata. |
+| Groups | Organizational placement uses `containerId`; retain legacy `parentId`, membership, and access fields. |
+| Services | Retain legacy host/network, `dependsOn`, and optional kind/endpoint/protocol/port/license/redundancy fields. Use instances/endpoints and typed dependencies for richer designs. |
+| DNS | `targetId` can reference a device, service, endpoint, or another DNS record. Keep zone and target links stable. |
+| Tasks | Preserve requirement associations when supplied; a completion state is separate from a test result. |
 
-Keep logical services distinct from their physical deployment. Identity systems
-link to identity services and record the implementation, domain, and realm.
-Directory groups link to an identity system; `parentId` must point to a group in
-that same identity system. `memberIds` can reference groups, devices, or services;
-`accessIds` reference services. Membership and parent relationships must remain
-valid rather than creating cycles.
+IDs are unique across the model, including decision-option IDs. References
+contain IDs rather than copied labels. Empty optional references use `""`;
+unplaced equipment uses `rackU: null`. Preserve the existing lifecycle labels
+and unknown facts. The machine schemas and current model take precedence over
+this prose if more fields are added.
 
-DNS zones link to their serving service. DNS records link to a zone and can link
-to a device, service, or another DNS record through `targetId`. `ttl` is blank/null or a nonnegative integer
-or numeric string. Entered DNS values and target references describe the design;
-they are not live lookup results.
+## Architectural invariants
 
-Logical `relationships` use one of these `kind` values: `authenticates`,
-`resolves`, `uses-license`, `hosts`, `forwards`, `depends`, or `access`. Their
-`from` and `to` endpoints can reference devices, networks, services, identity
-systems, groups, DNS zones, or DNS records. Interfaces belong in physical
-connections rather than logical relationship endpoints. Use a descriptive label
-and explicit protocol, port, or endpoint details when known. Optional service
-`licenseManager` text describes the configuration; use a `uses-license`
-relationship to link actual model records.
+- A rack uses `units`; legacy single-rack projects retain the metadata fallback.
+  `rackU` is the lowest occupied unit, so height 2 at U10 occupies U10–U11.
+  Placement fits the selected rack and cannot overlap within that rack. Hosted
+  equipment does not also occupy rack U, and hosting relationships cannot cycle.
+- An interface belongs to its device. A link's source/destination interfaces
+  belong to the corresponding endpoint devices; aggregates refer to compatible
+  interfaces on that same device. Use separate interfaces for distinct paths.
+  The Architecture **L2 / L3 interfaces** tab and workbench **Network path**
+  diagram render interface cards, tagged/untagged memberships, and routing
+  contexts from these same records; **Overview** retains the broader view.
+- Capabilities, deployments, and listening endpoints are separate records.
+  Endpoint instance/interface/network references must describe a consistent
+  deployment. Resolver assignments link clients to actual endpoint records.
+- Typed service dependencies use `Startup`, `Runtime`, `Optional`, or `Fallback`,
+  and `All` or `Any`. Only explicit startup cycles are rejected. Legacy
+  `dependsOn` is a runtime dependency; do not reject every reciprocal dependency.
+- Directory containment, membership, and permission mappings are distinct.
+  Preserve valid, acyclic membership/containment and identity-system boundaries.
+  Keep AD/IdM alternatives and provider-specific unknowns visible.
+- DNS record-target chains cannot cycle. Answers, TTL, addresses, and forwarding
+  are entered design facts, not lookup results. Renaming a target retains its ID.
+- Flows and policies document needs and intended enforcement. Model checks and
+  traces can expose missing or inconsistent facts; they cannot establish live
+  reachability, active firewall rules, health, replication, or working failover.
+- Failure results depend on recorded hosts, instances, domains, and dependency
+  semantics. A surviving modeled path is not a successful failover test.
+- Verification `result` is `Not run`, `Pass`, `Fail`, or `Blocked`. Do not set
+  `Pass`, invent a performer/time, or create evidence for an unperformed test.
+  A `Done` task and a `Verified` label do not establish acceptance.
+- Requirements, decisions, observations, tests, and evidence retain traceability.
+  A `Decided` decision needs an existing selected option and recorded rationale.
+  Baselines are named revision references; preserve scenarios and baseline
+  history instead of rewriting them to appear approved.
 
-Keep planned, approved, installed, and verified states distinct. Do not infer
-that equipment exists, that a connection works, or that a service is approved
-because it appears in a diagram. Use the actual lifecycle values supported by
-the exported model.
-
-Represent unresolved choices explicitly. A Red Hat IdM versus Microsoft AD
-decision should retain both alternatives until a human records the outcome. A
-decision with status `Decided` requires a valid `selectedOptionId` and a rationale;
-an LLM recommendation alone does not establish that the team has decided.
-
-For interface and port changes:
-
-- Each interface belongs to its recorded device. A connection's source interface
-  must belong to its source device, and its destination interface to its
-  destination device.
-- Use existing IDs for device, network, and interface references. Add new records
-  in the same proposal when the intended relationship requires them.
-- IP/CIDR values are entered design text. Do not invent address assignments,
-  uniqueness checks, routes, or observed connectivity.
-- Preserve an unknown endpoint as unknown. Do not add a physical port to a
-  logical dependency just to make the diagram look more complete.
-- A port label describes entered information. Verification requires the team's
-  build and validation work.
-
-Do not remove referenced records without also reviewing dependent references.
-Review deletions of evidence or comments explicitly; a shorter project is not a
-reason to discard the design rationale.
-
-Local author labels help readers follow meeting contributions. They are not
-authenticated accounts, signatures, or verified statements of who approved a
-change. Keep model revision history and Git history intact rather than
-rewriting them to make an LLM proposal look human-approved.
+No vendor addressing, protocols/ports, licensing arrangements, approvals,
+observations, or test outcomes should be inferred just to complete a diagram.
+In particular, an Atlassian application does not automatically require a license
+server. Use a `uses-license` relationship only for the selected deployment's
+applicable requirement. Keep unknown fields blank and record the question.
 
 ## Complete-record proposal example
 
-This example uses the fictional starter's IDs. Copy the actual `baseProjectId`
-and `baseFingerprint` from the context before applying it to that starter. For
-another project, use its real IDs and records. The example retains unknown
-platform and address values; it records design work without claiming a decision
-or verification.
+This example creates a requirement and an unperformed test without assuming
+vendor ports, host addresses, or approval. Copy the actual base values from the
+current context, choose IDs unique in that project, and add its real affected
+record references when known:
 
 ```json
 {
   "format": "opsdeck-design-changes",
   "version": 1,
-  "baseProjectId": "COPY_FROM_EXPORTED_CONTEXT",
-  "baseFingerprint": "COPY_FROM_EXPORTED_CONTEXT",
-  "summary": "SAMPLE-Record pending DNS design and services interface details; keep identity alternatives open.",
+  "baseProjectId": "COPY_FROM_CONTEXT",
+  "baseFingerprint": "COPY_FROM_CONTEXT",
+  "baseScenarioId": "COPY_FROM_CONTEXT",
+  "summary": "Record the engineering license-service acceptance need; leave deployment facts and test outcome unresolved.",
   "changes": [
     {
       "op": "upsert",
-      "collection": "services",
+      "collection": "requirements",
       "record": {
-        "id": "sample-service-dns",
-        "name": "SAMPLE-DNS",
-        "platform": "Undecided",
-        "owner": "IT",
-        "status": "Proposed",
-        "deviceId": "sample-device-compute",
-        "networkId": "sample-net-infrastructure",
-        "notes": "SAMPLE-Document authoritative zones, forwarding, ownership, and acceptance criteria before selecting a platform.",
-        "dependsOn": []
-      }
-    },
-    {
-      "op": "upsert",
-      "collection": "interfaces",
-      "record": {
-        "id": "sample-interface-services",
-        "name": "SAMPLE-Services host interface",
-        "deviceId": "sample-device-compute",
-        "networkId": "sample-net-infrastructure",
-        "address": "",
-        "mac": "",
-        "speed": "Undecided",
-        "status": "Proposed",
-        "notes": "SAMPLE-Confirm physical port identifier and addressing during the design review."
-      }
-    },
-    {
-      "op": "upsert",
-      "collection": "decisions",
-      "record": {
-        "id": "sample-decision-identity",
-        "title": "SAMPLE-Identity platform selection",
-        "status": "Open",
+        "id": "requirement-engineering-license-path",
+        "name": "Engineering client license access",
+        "description": "The chosen engineering application deployment must be usable from the intended client.",
         "owner": "",
-        "due": "",
-        "context": "SAMPLE-Capture verified Linux integration, administration, DNS, and recovery requirements before selecting a platform.",
-        "options": [
-          {"id": "sample-option-idm", "label": "Red Hat IdM", "pros": "", "cons": ""},
-          {"id": "sample-option-ad", "label": "Microsoft Active Directory", "pros": "", "cons": ""},
-          {"id": "sample-option-other", "label": "Other / combined approach", "pros": "", "cons": ""}
-        ],
-        "selectedOptionId": "",
-        "rationale": "",
-        "relatedIds": ["sample-service-identity", "sample-device-linux"]
+        "priority": "",
+        "relatedIds": [],
+        "decisionIds": [],
+        "acceptanceCriteria": "Confirm the selected deployment's applicable license requirement, then demonstrate the agreed client workflow and retain evidence.",
+        "notes": "Client, service, policy, and decision references remain to be linked by the team.",
+        "status": "Proposed"
+      }
+    },
+    {
+      "op": "upsert",
+      "collection": "verificationTests",
+      "record": {
+        "id": "test-engineering-license-path",
+        "name": "Engineering client license workflow",
+        "requirementIds": ["requirement-engineering-license-path"],
+        "relatedIds": [],
+        "procedure": "After confirming the selected product/deployment requirements, perform the agreed client workflow and record the result.",
+        "expectedResult": "The agreed workflow succeeds through the reviewed design and produces reviewable evidence.",
+        "actualResult": "",
+        "result": "Not run",
+        "performedBy": "",
+        "performedAt": "",
+        "evidenceIds": [],
+        "notes": "Procedure details and execution are pending.",
+        "status": "Proposed"
       }
     }
   ]
 }
 ```
 
-## A reusable request
+## Reusable LLM request
 
-```text
-Use the attached Design Studio context JSON as the current source of truth.
-Return only an opsdeck-design-changes version 1 JSON document using its
-changeSetTemplate. Copy baseProjectId and baseFingerprint exactly.
+> Read the current Design Studio context and its schemas. Propose the requested
+> architecture change using `changeSetTemplate`. Preserve project, fingerprint,
+> and scenario guards; stable IDs; complete existing record fields; evidence;
+> and unresolved alternatives. Separate capabilities, instances, and endpoints;
+> containment, membership, and permissions; flows and intended policy; tasks
+> and test results. Do not invent vendor defaults, observed facts, approvals, or
+> successful tests. Return only valid `opsdeck-design-changes` JSON. Use the
+> summary and record notes to explain remaining questions.
 
-Requested change: {{DESCRIBE THE CHANGE AND VERIFIED FACTS}}
+## File-capable agent CLI
 
-Preserve stable IDs and unrelated fields. Every upsert must contain a complete
-record in the exported schema. Do not invent missing equipment, addresses,
-ports, approvals, or decisions. Keep unresolved alternatives explicit. Include
-deletions only when I specifically requested them, and explain them in summary.
-Do not change author labels, markings, or project identity unless requested.
-```
-
-## Work from a JSON source file
-
-The Python helper uses only the standard library and supports a file-based
-authoring workflow. Run commands from the Design Studio repository root:
+The CLI uses Python's standard library. Run from the repository root and keep
+real projects in ignored `workspace/` or a private design repository:
 
 ```sh
-python3 tools/design_studio.py init --output workspace/projects/design.json
-python3 tools/design_studio.py validate workspace/projects/design.json
-python3 tools/design_studio.py summary workspace/projects/design.json
+python3 tools/design_studio.py init --output workspace/project.design.json
+python3 tools/design_studio.py init --sample --output workspace/sample.design.json
+python3 tools/design_studio.py validate workspace/project.design.json
+python3 tools/design_studio.py summary workspace/project.design.json > workspace/context.json
+python3 tools/design_studio.py apply workspace/project.design.json workspace/proposal.json --output workspace/reviewed.design.json
+python3 tools/design_studio.py validate workspace/reviewed.design.json
+python3 tools/design_studio.py render workspace/reviewed.design.json --output workspace/reviewed.design.html
 ```
 
-Use `init --sample` only when you want the fictional sample model:
+`summary` is the LLM context export despite its short name. `apply` validates
+the whole result and preserves before/after revisions, but writes immediately;
+use a separate output and review it before adopting it. `render` embeds the
+whole project in the generated application template, preserving history and
+assets. It does not regenerate source modules.
+
+### Model analysis and reports
+
+Use `lint` for findings, `trace` for an entered source/destination interaction,
+`impact` for dependency effects of selected failures, and `report` for handoff
+material. IDs in these examples are placeholders for current project IDs:
 
 ```sh
-python3 tools/design_studio.py init --output workspace/projects/sample-design.json --sample
+python3 tools/design_studio.py lint workspace/project.design.json
+python3 tools/design_studio.py trace workspace/project.design.json --source CLIENT_ID --destination ENDPOINT_ID
+python3 tools/design_studio.py trace workspace/project.design.json --source CLIENT_ID --destination ENDPOINT_ID --flow FLOW_ID
+python3 tools/design_studio.py impact workspace/project.design.json --failed HOST_ID --failed POWER_DOMAIN_ID
+python3 tools/design_studio.py report workspace/project.design.json --kind handoff --output workspace/handoff.md
+python3 tools/design_studio.py report workspace/project.design.json --kind addresses --output workspace/addresses.csv
+python3 tools/design_studio.py report workspace/project.design.json --kind ports --output workspace/ports.csv
+python3 tools/design_studio.py report workspace/project.design.json --kind flows --output workspace/communications.csv
+python3 tools/design_studio.py report workspace/project.design.json --kind build --output workspace/build.md
+python3 tools/design_studio.py report workspace/project.design.json --kind requirements --output workspace/requirements.md
 ```
 
-Apply a guarded proposal to a project file and write a separate result:
+Analysis reports entered facts, gaps, and assumptions. It does not discover or
+provision infrastructure, execute acceptance tests, or claim verified reachability.
+
+### Scenario and baseline CLI
+
+List local branches, create one from the current model or a saved revision, and
+switch the active branch. Prefer a separate output file for a reviewable result:
 
 ```sh
-python3 tools/design_studio.py apply workspace/projects/design.json proposal.json \
-  --output workspace/projects/design-reviewed.json
-python3 tools/design_studio.py validate workspace/projects/design-reviewed.json
-python3 tools/design_studio.py summary workspace/projects/design-reviewed.json
+python3 tools/design_studio.py scenario list workspace/project.design.json
+python3 tools/design_studio.py scenario create workspace/project.design.json --name "Identity alternative" --id scenario-identity-alternative --output workspace/branched.design.json
+python3 tools/design_studio.py scenario create workspace/project.design.json --name "Alternative from review" --from-revision REVISION_ID --output workspace/from-review.design.json
+python3 tools/design_studio.py scenario switch workspace/branched.design.json --id SCENARIO_ID --output workspace/switched.design.json
+python3 tools/design_studio.py baseline capture workspace/project.design.json --kind target --name "Target for design review" --author "Design workshop" --output workspace/baselined.design.json
+python3 tools/design_studio.py baseline compare workspace/baselined.design.json --left target --right SCENARIO_OR_REVISION_ID
 ```
 
-Render a standalone HTML copy with the current application template:
+`scenario create` accepts optional `--id`, `--from-revision`, and `--output`;
+`scenario switch` requires `--id` and accepts `--output`. These operations
+preserve other branches and local history. A named alternative is a copy for
+design work; its name does not itself change the selected identity platform.
+Export new LLM context after switching branches.
+
+`baseline capture` takes `--kind installed|target|accepted|verified`, a required
+`--name`, and optional `--author`/`--output`. It captures a revision snapshot;
+the label does not establish approval or verification. `baseline compare`
+accepts baseline kinds, scenario IDs, or revision IDs for `--left` and
+`--right`, and reports actual changed values. Keep observed facts and passing
+tests in their own records. Use `--output` on mutation commands when retaining
+the original file is useful; omitting it updates the project path.
+
+### Source development and reproducibility
+
+Edit authoring modules in `src/`, not only the generated HTML. The architecture
+schema is shared with Python. Rebuild and check before delivering source changes:
 
 ```sh
-python3 tools/design_studio.py render workspace/projects/design-reviewed.json \
-  --output workspace/projects/design-review.html
+python3 tools/build_app.py
+python3 tools/build_app.py --check
+npm ci
+npm test
+python3 -m unittest discover -s tests -v
+python3 tools/design_studio.py validate design-studio/sample-model.json
+git diff --check
 ```
 
-Use `--template design-studio/index.html` to select the template explicitly.
-Open the rendered HTML, review the design and its diagrams, then continue with
-the browser workflow. The CLI does not provide the interactive human-review
-dialog; inspect the JSON difference or review the separate rendered copy before
-adopting the result as the current source.
-
-An LLM can also edit a project JSON file directly. Preserve the original, have it
-write a separate proposed file, validate the proposal, inspect the full file
-difference, and render it for review. Direct file editing does not provide the
-change-set base check; guarded change sets are preferred for design changes.
-
-Use `python3 tools/design_studio.py --help` and each subcommand's `--help` for
-the current command options. Commit reviewed JSON and documentation through your
-normal Git workflow when repository version control is needed. Browser snapshots
-and CLI output files do not automatically create Git commits.
-
-## Resolve exchange errors
-
-| Result | Next step |
-| --- | --- |
-| Project ID or base fingerprint does not match | Export fresh context from the actual current project and regenerate the proposal. |
-| JSON fails to parse | Ask for valid plain JSON with the required envelope; keep the current project unchanged. |
-| A referenced ID is missing | Correct the ID or include the intended new record and valid references. |
-| An interface does not belong to the connection endpoint | Select the port on the correct device or correct the device endpoint. |
-| A decided choice lacks an option or rationale | Record the actual outcome and rationale, or keep the decision unresolved. |
-| A valid proposal changes more than requested | Reject it and narrow the request. Validation establishes structural validity, not design correctness. |
-
-The project remains an engineering record of entered facts and decisions. Human
-review establishes whether a proposed change reflects the intended system;
-validation and generated diagrams help make that review concrete.
+`npm ci` installs pinned development-only dependencies for the DOM interaction
+harness, and `npm test` runs those UI checks. Have Node available for that
+harness and JavaScript model, renderer, analysis, and parity checks; report
+skipped checks. Neither the deployed HTML nor the standard-library Python CLI
+requires npm packages at runtime. The deployed HTML needs neither Python nor Node. The
+Rack Studio catalog import is optional maintainer work using
+`tools/build_rack_catalog.py`; preserve its public-asset boundary and
+[third-party notices](../THIRD_PARTY_NOTICES.md). Never bring an existing private
+rack layout or network inventory into the public source while updating assets.

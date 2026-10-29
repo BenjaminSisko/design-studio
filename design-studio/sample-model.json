@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "meta": {
-    "id": "project-aa89bf13-4f81-4bb8-a899-c58d1e4dddf9",
+    "id": "project-b4a7e557-6d81-4c2d-9c3c-ee81589f14c7",
     "name": "SAMPLE-Engineering + IT integration",
     "description": "Fictional meeting starter. Every item is proposed; replace sample records with the team’s verified design.",
     "phase": "Concept",
@@ -9,7 +9,8 @@
     "rackUnits": 42,
     "rackName": "SAMPLE-INFRA-01",
     "classification": "",
-    "classificationColor": "#29624b"
+    "classificationColor": "#29624b",
+    "modelVersion": 2
   },
   "devices": [
     {
@@ -21,7 +22,12 @@
       "networkId": "sample-net-management",
       "rackU": 42,
       "height": 1,
-      "notes": "Placeholder. Hardware and policy are undecided."
+      "notes": "Placeholder. Hardware and policy are undecided.",
+      "rackId": "sample-rack-a",
+      "deviceKind": "Physical",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-switch",
@@ -32,7 +38,12 @@
       "networkId": "sample-net-management",
       "rackU": 40,
       "height": 1,
-      "notes": "Placeholder placement; port count and uplinks are undecided."
+      "notes": "Placeholder placement; port count and uplinks are undecided.",
+      "rackId": "sample-rack-a",
+      "deviceKind": "Physical",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-compute",
@@ -43,7 +54,15 @@
       "networkId": "sample-net-infrastructure",
       "rackU": 36,
       "height": 2,
-      "notes": "Placeholder compute capacity for proposed services."
+      "notes": "Placeholder compute capacity for proposed services.",
+      "rackId": "sample-rack-a",
+      "deviceKind": "Hypervisor",
+      "failureDomainIds": [
+        "sample-failure-host-a",
+        "sample-failure-power-a"
+      ],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-security",
@@ -54,7 +73,15 @@
       "networkId": "sample-net-infrastructure",
       "rackU": 33,
       "height": 2,
-      "notes": "Placeholder for monitoring and security services."
+      "notes": "Placeholder for monitoring and security services.",
+      "rackId": "sample-rack-b",
+      "deviceKind": "Hypervisor",
+      "failureDomainIds": [
+        "sample-failure-host-b",
+        "sample-failure-power-b"
+      ],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-backup",
@@ -65,7 +92,12 @@
       "networkId": "sample-net-infrastructure",
       "rackU": 30,
       "height": 2,
-      "notes": "Backup architecture and retention are undecided."
+      "notes": "Backup architecture and retention are undecided.",
+      "rackId": "sample-rack-a",
+      "deviceKind": "Physical",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-workstation",
@@ -76,7 +108,12 @@
       "networkId": "sample-net-engineering",
       "rackU": null,
       "height": 1,
-      "notes": "Illustrative endpoint; ownership and support boundary need agreement."
+      "notes": "Illustrative endpoint; ownership and support boundary need agreement.",
+      "rackId": "",
+      "deviceKind": "Workstation",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-linux",
@@ -87,7 +124,12 @@
       "networkId": "sample-net-engineering",
       "rackU": null,
       "height": 1,
-      "notes": "Operating system version and identity integration are undecided."
+      "notes": "Operating system version and identity integration are undecided.",
+      "rackId": "",
+      "deviceKind": "Physical",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     },
     {
       "id": "sample-device-instrument",
@@ -98,36 +140,84 @@
       "networkId": "sample-net-engineering",
       "rackU": null,
       "height": 1,
-      "notes": "Connectivity, protocols, and support constraints need confirmation."
+      "notes": "Connectivity, protocols, and support constraints need confirmation.",
+      "rackId": "",
+      "deviceKind": "Physical",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
+    },
+    {
+      "id": "sample-device-dns-a",
+      "name": "SAMPLE-dns-a",
+      "type": "Virtual machine",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-infrastructure",
+      "rackU": null,
+      "height": 1,
+      "notes": "Fictional DNS VM; platform, sizing and recovery remain undecided.",
+      "hostedBy": "sample-device-compute",
+      "rackId": "",
+      "deviceKind": "VM",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
+    },
+    {
+      "id": "sample-device-dns-b",
+      "name": "SAMPLE-dns-b",
+      "type": "Virtual machine",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-infrastructure",
+      "rackU": null,
+      "height": 1,
+      "notes": "Fictional DNS VM; platform, sizing and recovery remain undecided.",
+      "hostedBy": "sample-device-security",
+      "rackId": "",
+      "deviceKind": "VM",
+      "failureDomainIds": [],
+      "model": "",
+      "panelImage": ""
     }
   ],
   "networks": [
     {
       "id": "sample-net-engineering",
       "name": "SAMPLE-Engineering segment",
-      "cidr": "",
-      "vlan": "",
-      "purpose": "Engineering hosts and test equipment; addressing and controls undecided.",
+      "cidr": "192.0.2.0/24",
+      "vlan": "10",
+      "purpose": "Engineering hosts and test equipment; addressing and controls undecided. SAMPLE documentation addresses only.",
       "owner": "Engineering",
-      "status": "Proposed"
+      "status": "Proposed",
+      "gateway": "192.0.2.1",
+      "zoneId": "sample-zone-engineering",
+      "vrfId": "sample-vrf-lab"
     },
     {
       "id": "sample-net-infrastructure",
       "name": "SAMPLE-Infrastructure segment",
-      "cidr": "",
-      "vlan": "",
-      "purpose": "Shared IT services; addressing and controls undecided.",
+      "cidr": "198.51.100.0/24",
+      "vlan": "20",
+      "purpose": "Shared IT services; addressing and controls undecided. SAMPLE documentation addresses only.",
       "owner": "IT",
-      "status": "Proposed"
+      "status": "Proposed",
+      "gateway": "198.51.100.1",
+      "zoneId": "sample-zone-services",
+      "vrfId": "sample-vrf-lab"
     },
     {
       "id": "sample-net-management",
       "name": "SAMPLE-Management segment",
-      "cidr": "",
-      "vlan": "",
-      "purpose": "Administration plane; addressing and access path undecided.",
+      "cidr": "203.0.113.0/24",
+      "vlan": "30",
+      "purpose": "Administration plane; addressing and access path undecided. SAMPLE documentation addresses only.",
       "owner": "IT",
-      "status": "Proposed"
+      "status": "Proposed",
+      "gateway": "203.0.113.1",
+      "zoneId": "sample-zone-management",
+      "vrfId": "sample-vrf-lab"
     }
   ],
   "services": [
@@ -298,7 +388,17 @@
       "mac": "",
       "speed": "Undecided",
       "status": "Proposed",
-      "notes": "Port identifier and addressing need confirmation."
+      "notes": "Port identifier and addressing need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-engineering",
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
     },
     {
       "id": "sample-interface-switch-uplink",
@@ -309,7 +409,17 @@
       "mac": "",
       "speed": "Undecided",
       "status": "Proposed",
-      "notes": "Port identifier and addressing need confirmation."
+      "notes": "Port identifier and addressing need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-engineering",
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
     },
     {
       "id": "sample-interface-services",
@@ -320,18 +430,161 @@
       "mac": "",
       "speed": "Undecided",
       "status": "Proposed",
-      "notes": "Connectivity requirements need confirmation."
+      "notes": "Connectivity requirements need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
     },
     {
       "id": "sample-interface-linux",
       "name": "SAMPLE-Engineering Linux interface",
       "deviceId": "sample-device-linux",
       "networkId": "sample-net-engineering",
-      "address": "",
+      "address": "192.0.2.20/24",
       "mac": "",
       "speed": "Undecided",
       "status": "Proposed",
-      "notes": "Engineering-owned endpoint; port and addressing need confirmation."
+      "notes": "Engineering-owned endpoint; port and addressing need confirmation.",
+      "mode": "Access",
+      "untaggedNetworkId": "sample-net-engineering",
+      "taggedNetworkIds": [],
+      "aggregateId": "",
+      "gateway": "192.0.2.1",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-linux-management",
+      "name": "SAMPLE-Linux management interface",
+      "deviceId": "sample-device-linux",
+      "networkId": "sample-net-management",
+      "address": "203.0.113.20/24",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Access",
+      "untaggedNetworkId": "sample-net-management",
+      "taggedNetworkIds": [],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-switch-engineering",
+      "name": "SAMPLE-Switch engineering access port",
+      "deviceId": "sample-device-switch",
+      "networkId": "sample-net-engineering",
+      "address": "",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Access",
+      "untaggedNetworkId": "sample-net-engineering",
+      "taggedNetworkIds": [],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-switch-services",
+      "name": "SAMPLE-Switch services trunk",
+      "deviceId": "sample-device-switch",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-dns-a",
+      "name": "SAMPLE-DNS VM A interface",
+      "deviceId": "sample-device-dns-a",
+      "networkId": "sample-net-infrastructure",
+      "address": "198.51.100.53/24",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Virtual",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-dns-b",
+      "name": "SAMPLE-DNS VM B interface",
+      "deviceId": "sample-device-dns-b",
+      "networkId": "sample-net-infrastructure",
+      "address": "198.51.100.54/24",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Virtual",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-switch-security",
+      "name": "SAMPLE-Switch second-host trunk",
+      "deviceId": "sample-device-switch",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
+    },
+    {
+      "id": "sample-interface-security-services",
+      "name": "SAMPLE-Second hypervisor uplink",
+      "deviceId": "sample-device-security",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "mac": "",
+      "speed": "",
+      "status": "Proposed",
+      "notes": "Fictional interface; blank speed and MTU need confirmation.",
+      "mode": "Trunk",
+      "untaggedNetworkId": "",
+      "taggedNetworkIds": [
+        "sample-net-infrastructure",
+        "sample-net-management"
+      ],
+      "aggregateId": "",
+      "gateway": "",
+      "mtu": ""
     }
   ],
   "links": [
@@ -356,6 +609,26 @@
       "from": "sample-device-switch",
       "to": "sample-device-compute",
       "label": "SAMPLE-Services connection",
+      "status": "Proposed",
+      "fromInterfaceId": "sample-interface-switch-services",
+      "toInterfaceId": "sample-interface-services"
+    },
+    {
+      "id": "sample-link-linux-access",
+      "from": "sample-device-linux",
+      "to": "sample-device-switch",
+      "fromInterfaceId": "sample-interface-linux",
+      "toInterfaceId": "sample-interface-switch-engineering",
+      "label": "SAMPLE-Engineering client access link",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-link-security-uplink",
+      "from": "sample-device-switch",
+      "to": "sample-device-security",
+      "fromInterfaceId": "sample-interface-switch-security",
+      "toInterfaceId": "sample-interface-security-services",
+      "label": "SAMPLE-Second hypervisor trunk",
       "status": "Proposed"
     }
   ],
@@ -531,7 +804,16 @@
         "sample-dns-zone",
         "sample-dns-matlab",
         "sample-dns-atlassian",
-        "sample-dns-license"
+        "sample-dns-license",
+        "sample-instance-dns-a",
+        "sample-instance-dns-b",
+        "sample-endpoint-dns-a",
+        "sample-endpoint-dns-b",
+        "sample-endpoint-matlab",
+        "sample-endpoint-atlassian",
+        "sample-endpoint-license",
+        "sample-directory-engineering",
+        "sample-principal-engineer"
       ],
       "notes": "Proposed identity structure, DNS targets, application access, and license dependency. Names and relationships follow stable IDs across edits."
     }
@@ -556,7 +838,8 @@
       "parentId": "",
       "kind": "Group",
       "memberIds": [
-        "sample-device-workstation",
+        "sample-group-test",
+        "sample-principal-engineer",
         "sample-device-linux"
       ],
       "accessIds": [
@@ -564,13 +847,14 @@
         "sample-service-atlassian"
       ],
       "notes": "Proposed membership and application access for team review; no authorization is granted by this diagram.",
-      "status": "Proposed"
+      "status": "Proposed",
+      "containerId": "sample-directory-engineering"
     },
     {
       "id": "sample-group-test",
       "name": "SAMPLE-Test team",
       "identityId": "sample-identity-workforce",
-      "parentId": "sample-group-engineering",
+      "parentId": "",
       "kind": "Group",
       "memberIds": [
         "sample-device-instrument"
@@ -578,8 +862,9 @@
       "accessIds": [
         "sample-service-matlab"
       ],
-      "notes": "Proposed container/member structure; validate feasibility after choosing an identity platform.",
-      "status": "Proposed"
+      "notes": "Nested membership is distinct from organizational container placement.",
+      "status": "Proposed",
+      "containerId": "sample-directory-engineering"
     }
   ],
   "dnsZones": [
@@ -599,7 +884,7 @@
       "zoneId": "sample-dns-zone",
       "type": "A",
       "value": "",
-      "targetId": "sample-service-matlab",
+      "targetId": "sample-endpoint-matlab",
       "ttl": "",
       "notes": "Proposed record target only. Address and TTL are unassigned.",
       "status": "Proposed"
@@ -610,7 +895,7 @@
       "zoneId": "sample-dns-zone",
       "type": "A",
       "value": "",
-      "targetId": "sample-service-atlassian",
+      "targetId": "sample-endpoint-atlassian",
       "ttl": "",
       "notes": "Proposed record target only. Address and TTL are unassigned.",
       "status": "Proposed"
@@ -621,7 +906,7 @@
       "zoneId": "sample-dns-zone",
       "type": "A",
       "value": "",
-      "targetId": "sample-service-license",
+      "targetId": "sample-endpoint-license",
       "ttl": "",
       "notes": "Proposed record target only. Address and TTL are unassigned.",
       "status": "Proposed"
@@ -688,5 +973,386 @@
       "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
       "status": "Proposed"
     }
-  ]
+  ],
+  "racks": [
+    {
+      "id": "sample-rack-a",
+      "name": "SAMPLE-IT rack A",
+      "units": 42,
+      "site": "SAMPLE-Lab",
+      "location": "Unassigned",
+      "notes": "Fictional rack location.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-rack-b",
+      "name": "SAMPLE-IT rack B",
+      "units": 42,
+      "site": "SAMPLE-Lab",
+      "location": "Unassigned",
+      "notes": "Fictional second rack for comparing failure domains.",
+      "status": "Proposed"
+    }
+  ],
+  "vrfs": [
+    {
+      "id": "sample-vrf-lab",
+      "name": "SAMPLE-Lab routing context",
+      "routeDistinguisher": "",
+      "notes": "Fictional isolated design context; no deployment configuration implied.",
+      "status": "Proposed"
+    }
+  ],
+  "securityZones": [
+    {
+      "id": "sample-zone-engineering",
+      "name": "SAMPLE-Engineering zone",
+      "owner": "Engineering",
+      "notes": "Boundary and approved paths need team review.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-zone-services",
+      "name": "SAMPLE-IT services zone",
+      "owner": "IT",
+      "notes": "Shared service access is a proposed requirement.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-zone-management",
+      "name": "SAMPLE-Management zone",
+      "owner": "IT",
+      "notes": "Administrative path requires separate policy and verification.",
+      "status": "Proposed"
+    }
+  ],
+  "failureDomains": [
+    {
+      "id": "sample-failure-host-a",
+      "name": "SAMPLE-Hypervisor A failure",
+      "kind": "Host",
+      "notes": "Failure-domain placeholder.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-failure-host-b",
+      "name": "SAMPLE-Hypervisor B failure",
+      "kind": "Host",
+      "notes": "Failure-domain placeholder.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-failure-power-a",
+      "name": "SAMPLE-Power feed A",
+      "kind": "Power",
+      "notes": "Proposed feed; independence has not been verified.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-failure-power-b",
+      "name": "SAMPLE-Power feed B",
+      "kind": "Power",
+      "notes": "Proposed feed; independence has not been verified.",
+      "status": "Proposed"
+    }
+  ],
+  "routes": [
+    {
+      "id": "sample-route-linux-default",
+      "name": "SAMPLE-Linux default route",
+      "deviceId": "sample-device-linux",
+      "vrfId": "sample-vrf-lab",
+      "destination": "0.0.0.0/0",
+      "gateway": "192.0.2.1",
+      "interfaceId": "sample-interface-linux",
+      "metric": "",
+      "notes": "Illustrative default route. Management routing remains unresolved.",
+      "status": "Proposed"
+    }
+  ],
+  "serviceInstances": [
+    {
+      "id": "sample-instance-dns-a",
+      "name": "SAMPLE-DNS instance A",
+      "serviceId": "sample-service-dns",
+      "deviceId": "sample-device-dns-a",
+      "networkId": "sample-net-infrastructure",
+      "role": "Proposed resolver A",
+      "failureDomainIds": [
+        "sample-failure-host-a",
+        "sample-failure-power-a"
+      ],
+      "notes": "Proposed deployment; shared switch dependence remains a design concern.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-instance-dns-b",
+      "name": "SAMPLE-DNS instance B",
+      "serviceId": "sample-service-dns",
+      "deviceId": "sample-device-dns-b",
+      "networkId": "sample-net-infrastructure",
+      "role": "Proposed resolver B",
+      "failureDomainIds": [
+        "sample-failure-host-b",
+        "sample-failure-power-b"
+      ],
+      "notes": "Redundancy is a design proposal; no failover test has run.",
+      "status": "Proposed"
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "sample-endpoint-dns-a",
+      "name": "SAMPLE-dns-a",
+      "serviceId": "sample-service-dns",
+      "instanceId": "sample-instance-dns-a",
+      "interfaceId": "sample-interface-dns-a",
+      "networkId": "sample-net-infrastructure",
+      "address": "198.51.100.53",
+      "dnsName": "dns-a.sample.invalid",
+      "protocol": "",
+      "port": "",
+      "role": "Resolver",
+      "notes": "Fictional planned endpoint. Protocol and ports intentionally unresolved.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-endpoint-dns-b",
+      "name": "SAMPLE-dns-b",
+      "serviceId": "sample-service-dns",
+      "instanceId": "sample-instance-dns-b",
+      "interfaceId": "sample-interface-dns-b",
+      "networkId": "sample-net-infrastructure",
+      "address": "198.51.100.54",
+      "dnsName": "dns-b.sample.invalid",
+      "protocol": "",
+      "port": "",
+      "role": "Resolver",
+      "notes": "Fictional planned endpoint. Protocol and ports intentionally unresolved.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-endpoint-matlab",
+      "name": "SAMPLE-matlab",
+      "serviceId": "sample-service-matlab",
+      "instanceId": "",
+      "interfaceId": "",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "dnsName": "matlab.sample.invalid",
+      "protocol": "",
+      "port": "",
+      "role": "Application",
+      "notes": "Fictional planned endpoint. Protocol and ports intentionally unresolved.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-endpoint-atlassian",
+      "name": "SAMPLE-atlassian",
+      "serviceId": "sample-service-atlassian",
+      "instanceId": "",
+      "interfaceId": "",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "dnsName": "atlassian.sample.invalid",
+      "protocol": "",
+      "port": "",
+      "role": "Application",
+      "notes": "Fictional planned endpoint. Protocol and ports intentionally unresolved.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-endpoint-license",
+      "name": "SAMPLE-license",
+      "serviceId": "sample-service-license",
+      "instanceId": "",
+      "interfaceId": "",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "dnsName": "license.sample.invalid",
+      "protocol": "",
+      "port": "",
+      "role": "Proposed license manager",
+      "notes": "Fictional planned endpoint. Protocol and ports intentionally unresolved.",
+      "status": "Proposed"
+    }
+  ],
+  "resolverAssignments": [
+    {
+      "id": "sample-resolver-linux",
+      "name": "SAMPLE-Linux resolver plan",
+      "clientId": "sample-device-linux",
+      "resolverEndpointIds": [
+        "sample-endpoint-dns-a",
+        "sample-endpoint-dns-b"
+      ],
+      "searchDomains": [
+        "sample.invalid"
+      ],
+      "notes": "Two planned resolvers; client behavior and failover require verification.",
+      "status": "Proposed"
+    }
+  ],
+  "serviceDependencies": [
+    {
+      "id": "sample-dependency-license-dns",
+      "name": "SAMPLE-License name resolution",
+      "fromServiceId": "sample-service-license",
+      "toServiceId": "sample-service-dns",
+      "kind": "Runtime",
+      "requirement": "Any",
+      "notes": "Proposed dependency; confirm product and deployment requirements.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-dependency-matlab-license",
+      "name": "SAMPLE-MATLAB license requirement",
+      "fromServiceId": "sample-service-matlab",
+      "toServiceId": "sample-service-license",
+      "kind": "Runtime",
+      "requirement": "All",
+      "notes": "Fictional licensing scenario for review, not a vendor default.",
+      "status": "Proposed"
+    }
+  ],
+  "directoryObjects": [
+    {
+      "id": "sample-directory-engineering",
+      "name": "SAMPLE-Engineering organizational container",
+      "identityId": "sample-identity-workforce",
+      "parentId": "",
+      "kind": "Container",
+      "notes": "Conceptual directory organization; provider support must be assessed before acceptance.",
+      "status": "Proposed"
+    }
+  ],
+  "principals": [
+    {
+      "id": "sample-principal-engineer",
+      "name": "SAMPLE-Engineer user",
+      "identityId": "sample-identity-workforce",
+      "kind": "User",
+      "nativeId": "",
+      "notes": "Fictional principal; actual names and identifiers are unassigned.",
+      "status": "Proposed",
+      "containerId": "sample-directory-engineering"
+    }
+  ],
+  "accessMappings": [
+    {
+      "id": "sample-access-engineering-matlab",
+      "name": "SAMPLE-Engineering MATLAB access",
+      "principalId": "sample-group-engineering",
+      "serviceId": "sample-service-matlab",
+      "role": "Proposed engineering user",
+      "resource": "",
+      "permission": "",
+      "notes": "Role and permission mapping requires application-owner review.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-access-engineering-atlassian",
+      "name": "SAMPLE-Engineering Atlassian access",
+      "principalId": "sample-group-engineering",
+      "serviceId": "sample-service-atlassian",
+      "role": "Proposed engineering user",
+      "resource": "",
+      "permission": "",
+      "notes": "Product and deployment-specific access model remains undecided.",
+      "status": "Proposed"
+    }
+  ],
+  "flows": [
+    {
+      "id": "sample-flow-license",
+      "name": "SAMPLE-Linux to license endpoint",
+      "sourceId": "sample-device-linux",
+      "destinationId": "sample-endpoint-license",
+      "sourceInterfaceId": "sample-interface-linux",
+      "protocol": "",
+      "ports": "",
+      "direction": "Initiated",
+      "purpose": "Proposed engineering license checkout; confirm deployment requirements.",
+      "zoneIds": [
+        "sample-zone-engineering",
+        "sample-zone-services"
+      ],
+      "enforcementDeviceIds": [
+        "sample-device-firewall"
+      ],
+      "policyIds": [
+        "sample-policy-license"
+      ],
+      "requirementIds": [
+        "sample-requirement-engineering-license"
+      ],
+      "notes": "Unknown ports are a visible design question. This path has not been tested.",
+      "status": "Proposed"
+    }
+  ],
+  "policies": [
+    {
+      "id": "sample-policy-license",
+      "name": "SAMPLE-License firewall request",
+      "sourceZoneId": "sample-zone-engineering",
+      "destinationZoneId": "sample-zone-services",
+      "sourceIds": [
+        "sample-device-linux"
+      ],
+      "destinationIds": [
+        "sample-endpoint-license"
+      ],
+      "protocol": "",
+      "ports": "",
+      "action": "Review",
+      "enforcementDeviceId": "sample-device-firewall",
+      "ruleReference": "",
+      "owner": "IT",
+      "notes": "Pending protocol/ports, licensing confirmation and policy approval. No rule is deployed.",
+      "status": "Proposed"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "sample-requirement-engineering-license",
+      "name": "SAMPLE-Engineering license access",
+      "description": "The engineering Linux client must reach the confirmed application and licensing endpoints using approved paths.",
+      "owner": "Engineering + IT",
+      "priority": "High",
+      "relatedIds": [
+        "sample-device-linux",
+        "sample-service-matlab",
+        "sample-service-license"
+      ],
+      "decisionIds": [
+        "sample-decision-boundary"
+      ],
+      "acceptanceCriteria": "Resolve the agreed names, authenticate where required, complete a product-approved licensing test and record evidence.",
+      "notes": "Fictional requirement; validate licensing architecture before baseline acceptance.",
+      "status": "Proposed"
+    }
+  ],
+  "verificationTests": [
+    {
+      "id": "sample-test-license",
+      "name": "SAMPLE-Verify engineering licensing path",
+      "requirementIds": [
+        "sample-requirement-engineering-license"
+      ],
+      "relatedIds": [
+        "sample-flow-license",
+        "sample-endpoint-license"
+      ],
+      "procedure": "After the design is accepted, verify resolver behavior and the selected product licensing operation from the engineering interface; record results and evidence.",
+      "expectedResult": "Names resolve to the agreed endpoint and the authorized operation succeeds through the accepted policy.",
+      "actualResult": "",
+      "result": "Not run",
+      "performedBy": "",
+      "performedAt": "",
+      "evidenceIds": [],
+      "notes": "A proposed test procedure is not a test result.",
+      "status": "Proposed"
+    }
+  ],
+  "observations": []
 }

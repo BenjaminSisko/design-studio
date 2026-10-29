@@ -1,0 +1,11 @@
+{
+  "name": "design-studio-checks",
+  "private": true,
+  "description": "Development-only DOM checks; the app has no runtime dependencies.",
+  "scripts": {
+    "test": "node tests/test_ui.cjs"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.14"
+  }
+}

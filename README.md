@@ -1,103 +1,135 @@
 # Design Studio
 
-An offline workspace for designing engineering and IT infrastructure together.
-Enter equipment, interfaces, networks, services, identity structure, DNS, and
-application dependencies once, then generate consistent diagrams and retain the
-decisions behind the design.
+An offline architecture workspace for engineering and IT infrastructure. Enter
+physical equipment, interfaces, networks, services, identity, DNS, application
+communications, requirements, and verification records once. Generate linked
+visuals, inspect design gaps and modeled failure impact, compare alternatives,
+and carry the decisions through implementation.
 
-The application is one self-contained HTML file. It needs no installation,
-server, account, build step, or internet connection.
+The application is a **single self-contained HTML file**. Open the committed
+file directly in a desktop browser; no installation, server, account, build,
+API key, or internet connection is required.
 
-## Start the application
+## Start
 
-1. Download this repository using **Code → Download ZIP**, or clone it:
+1. Download **Code → Download ZIP**, or clone the public source:
 
    ```sh
    git clone https://github.com/BenjaminSisko/design-studio.git
    cd design-studio
    ```
 
-2. Open [`design-studio/index.html`](design-studio/index.html) in a desktop browser.
-3. Inspect the fictional `SAMPLE-` design or choose **New project** to start clean.
-4. Export **Project JSON** or **Portable HTML** to keep an editable handoff.
+2. Open [`design-studio/index.html`](design-studio/index.html).
+3. Explore the clearly fictional `SAMPLE-` project or select **New project**.
+4. Open **Architecture workbench** to follow a network path, inspect service
+   deployments, review communication requirements, and track the build.
+5. Export **Project JSON** or **Portable HTML** after meaningful edits.
 
-The HTML application does not require Python or Node.js. Browser storage is
-local; exported files carry the model, attachments, and revision history between
-machines. Use one active editor for a meeting.
+Use one active editor during a meeting. Browser saves are local; exports carry
+the model, assets, scenarios, baselines, and revision history between machines.
 
-## What it includes
+## Architecture workbench
 
-- Rack elevations, network membership, interfaces, ports, and entered connections.
-- Shared services, hosting, dependencies, ownership, and lifecycle status.
-- Identity implementation choices, domains and realms, directory containers,
-  nested groups, membership, and intended application access.
-- DNS zones, records, aliases, referenced targets, and resolver/forwarding
-  relationships entered as logical design records.
-- Applications and applicable license dependencies, with team-entered endpoints,
-  protocols, ports, license managers, and redundancy plans.
-- Logical service maps, focused identity/DNS/application views, custom diagram
-  selections and positioning, SVG exports, and printable meeting packs.
-- Evidence attachments, comments, alternatives and rationale, build tasks, named
-  revisions, before/after comparisons, and restoration with a safety snapshot.
-- LLM context export, validated change proposals, and a file-based editing CLI.
+| Workspace | Design activity |
+| --- | --- |
+| **Network path** | Follow the L2/L3 interface diagram and trace entered access/trunk VLAN membership, physical links, routes, and routing/security contexts. |
+| **Service deployment** | Separate a service capability from its deployed instances, hosting, endpoints, resolver assignments, and failure domains. |
+| **Communication** | Record required source/destination flows, initiator, purpose, protocol/ports, zones, enforcement devices, and intended policy. |
+| **Design checks** | Review model findings such as address conflicts, incomplete network paths or policy, stale references, missing ownership, and shared failure dependencies. |
+| **Failure impact** | Select failed items and inspect affected dependencies and the assumptions behind the model-based result. |
+| **Requirements & tests** | Connect requirements and decisions to tasks, acceptance procedures, recorded results, observations, and evidence. |
+| **Scenarios & baselines** | Branch alternatives; preserve installed, target, accepted, and verified snapshots; compare actual record values. |
+| **Build pack** | Generate model-based handoff material: address plans, port/cable information, communication matrices, requirements, and implementation work. |
 
-The sample keeps platform choices, real addresses, and endpoints undecided.
-Displayed paths describe entered design information and lifecycle status; they
-do not discover, configure, or verify live infrastructure.
+The **Architecture** canvas offers **Overview**, **L2 / L3 interfaces**, **Rack
+Studio**, **Service deployment**, and **Dependencies** tabs. Overview presents
+the broad network/service picture; L2/L3 shows individual interface cards,
+tagged/untagged network relationships, and routing contexts. The logical-service, identity/group, DNS,
+application/license, custom-diagram, evidence, comments, and decision workspaces
+remain connected to the same stable records. Export generated SVGs and printable
+review material for the team.
 
-## Work with an agent or LLM
+These views describe entered design information. A displayed path, modeled
+policy match, failure analysis, baseline label, or completed task does not
+establish live reachability or a passing acceptance test. Record verification
+results and supporting evidence explicitly.
 
-**Start with [`AGENTS.md`](AGENTS.md).** It explains the repository architecture,
-model invariants, editing workflow, and checks an agent should run. The detailed
-file contract and examples are in the [LLM exchange guide](design-studio/LLM_GUIDE.md).
+## Your existing Rack Studio, integrated
 
-For an LLM without filesystem access, use **LLM exchange** in the application:
-export the context, request a change-set JSON, import it, review the before/after
-values, and apply it as a recorded revision. A stale project ID or fingerprint is
-rejected. Design Studio does not call an LLM provider or require an API key.
+The physical rack workspace reuses the Rack Studio renderer and public catalog:
+**5,835 models, 9 embedded front-panel images, and 20 generic network stencils**.
+Search the catalog, choose equipment, place it in a rack by its lowest occupied
+U, move it within the rack, or upload a panel image. Equipment shares its ID
+with interfaces, hosts, services, decisions, and evidence throughout the app.
+Multiple racks and hosted/VM inventory are supported.
 
-For a file-capable agent, the optional Python command-line tool uses only the
-standard library:
+Models without a bundled image use synthetic panels. The full 857 MB original
+image tree is not required. Existing Rack Studio layout JSON remains an import
+option; new equipment can be added directly from the integrated catalog.
+[Third-party notices](THIRD_PARTY_NOTICES.md) document reuse and licenses.
+
+## Work standalone or with an LLM
+
+Start an agent with [`AGENTS.md`](AGENTS.md). The detailed contract is in the
+[LLM exchange guide](design-studio/LLM_GUIDE.md).
+
+**LLM exchange** exports the current model, schemas, findings, and a guarded
+proposal template. Import the returned JSON, review before/after values, then
+apply it as a revision. Project ID, model fingerprint, and scenario scope keep
+proposals tied to their starting design. Design Studio does not contact an LLM
+provider; the exchange is file based.
+
+A file-capable agent can use the optional CLI:
 
 ```sh
 python3 tools/design_studio.py init --sample --output workspace/project.design.json
 python3 tools/design_studio.py validate workspace/project.design.json
 python3 tools/design_studio.py summary workspace/project.design.json > workspace/context.json
-python3 tools/design_studio.py apply workspace/project.design.json workspace/changes.json --output workspace/revised.design.json
-python3 tools/design_studio.py render workspace/revised.design.json --output workspace/revised.design.html
+python3 tools/design_studio.py apply workspace/project.design.json workspace/changes.json --output workspace/reviewed.design.json
+python3 tools/design_studio.py render workspace/reviewed.design.json --output workspace/reviewed.design.html
+python3 tools/design_studio.py lint workspace/reviewed.design.json
+python3 tools/design_studio.py report workspace/reviewed.design.json --kind handoff --output workspace/handoff.md
 ```
 
-`summary` emits LLM context with the model, record schemas, instructions, and a
-guarded change-set template. `apply` validates the complete result and preserves
-before/after revisions. `render` embeds the project in another standalone HTML
-copy. JSON is the canonical interchange format.
+Use the exported schemas for exact field names and preserve complete records,
+stable IDs, history, assets, and unknown facts. JSON is canonical. CLI analysis,
+report, scenario, and baseline workflows are described in the
+[LLM guide](design-studio/LLM_GUIDE.md); the
+[operator guide](design-studio/README.md) covers meetings and day-to-day editing.
 
-## Repository map
+## Source and reproducible build
 
 | Path | Purpose |
 | --- | --- |
-| [`AGENTS.md`](AGENTS.md) | Entry point for coding agents and file-based design agents |
-| [`design-studio/index.html`](design-studio/index.html) | Complete offline application and embedded JavaScript model core |
-| [`design-studio/README.md`](design-studio/README.md) | Operator and meeting guide |
-| [`design-studio/LLM_GUIDE.md`](design-studio/LLM_GUIDE.md) | JSON envelopes, schema fields, proposal examples, and LLM workflow |
-| [`design-studio/sample-model.json`](design-studio/sample-model.json) | Fictional service-oriented demonstration model |
-| [`tools/design_studio.py`](tools/design_studio.py) | Standard-library CLI and mirrored schema validation |
-| [`tests/test_design_studio.py`](tests/test_design_studio.py) | Migration, model, proposal, export, and cross-language tests |
+| [`AGENTS.md`](AGENTS.md) | Agent entry point, invariants, and delivery checks. |
+| [`src/`](src/) | Authoring modules, schema, rack renderer/catalog, and HTML/CSS shell. |
+| [`tools/build_app.py`](tools/build_app.py) | Inline authoring modules into the single-file deliverable. |
+| [`design-studio/index.html`](design-studio/index.html) | Generated offline application; ready to open. |
+| [`design-studio/sample-model.json`](design-studio/sample-model.json) | Fictional demonstration model. |
+| [`tools/design_studio.py`](tools/design_studio.py) | Project validation, LLM changes, analysis, reports, and portable rendering. |
+| [`tools/build_rack_catalog.py`](tools/build_rack_catalog.py) | Optional import of public assets from a Rack Studio checkout. |
+| [`tests/`](tests/) | Model, analysis, schema parity, renderer, and export checks. |
 
-## Development checks
-
-With Python 3.14 and Node.js available, run:
+Develop in `src/`, then regenerate and verify the distributable:
 
 ```sh
+python3 tools/build_app.py
+python3 tools/build_app.py --check
+npm ci
+npm test
 python3 -m unittest discover -s tests -v
 python3 tools/design_studio.py validate design-studio/sample-model.json
 git diff --check
 ```
 
-Node is used for the JavaScript/Python parity check and is optional for CLI use.
-Without Node, that one test is skipped. CI runs all checks with both runtimes.
+Python's standard library builds the application. `npm ci` installs the pinned
+development-only DOM test tooling; `npm test` exercises UI workflows. Have Node
+available for those checks and JavaScript parity/analysis/renderer tests; check
+test output for skips. The production application has no runtime dependencies
+and does not require Python, Node, or an npm installation.
 
-The source template contains no saved real project or evidence. Keep actual
-infrastructure designs in the ignored `workspace/` directory or a separate
-private repository. Local snapshots, exported files, and Git commits are
-different history mechanisms; local author labels are not authenticated approvals.
+Keep actual infrastructure exports and attachments in ignored `workspace/` or a
+separate private design repository. Local scenarios and revisions are not Git
+commits or automatic synchronization. Concurrent editing, authenticated
+approvals, team access control, discovery, provisioning, and live network tests
+need separate systems and procedures.

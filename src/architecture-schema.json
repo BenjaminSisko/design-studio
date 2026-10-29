@@ -1,0 +1,877 @@
+{
+  "racks": {
+    "label": "Racks",
+    "required": "id name units site location notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "units": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 200
+      },
+      "site": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "vrfs": {
+    "label": "Routing contexts",
+    "required": "id name routeDistinguisher notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "routeDistinguisher": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "securityZones": {
+    "label": "Security zones",
+    "required": "id name owner notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "owner": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "failureDomains": {
+    "label": "Failure domains",
+    "required": "id name kind notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "kind": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "routes": {
+    "label": "Routes",
+    "required": "id name deviceId vrfId destination gateway interfaceId metric notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "deviceId": {
+        "type": "reference",
+        "references": [
+          "devices"
+        ],
+        "requiredReference": true
+      },
+      "vrfId": {
+        "type": "reference",
+        "references": [
+          "vrfs"
+        ],
+        "requiredReference": false
+      },
+      "destination": {
+        "type": "string"
+      },
+      "gateway": {
+        "type": "string"
+      },
+      "interfaceId": {
+        "type": "reference",
+        "references": [
+          "interfaces"
+        ],
+        "requiredReference": false
+      },
+      "metric": {
+        "type": "integer",
+        "blank": true,
+        "minimum": 0
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "serviceInstances": {
+    "label": "Service instances",
+    "required": "id name serviceId deviceId networkId role failureDomainIds notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "serviceId": {
+        "type": "reference",
+        "references": [
+          "services"
+        ],
+        "requiredReference": true
+      },
+      "deviceId": {
+        "type": "reference",
+        "references": [
+          "devices"
+        ],
+        "requiredReference": false
+      },
+      "networkId": {
+        "type": "reference",
+        "references": [
+          "networks"
+        ],
+        "requiredReference": false
+      },
+      "role": {
+        "type": "string"
+      },
+      "failureDomainIds": {
+        "type": "references",
+        "references": [
+          "failureDomains"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "endpoints": {
+    "label": "Service endpoints",
+    "required": "id name serviceId instanceId interfaceId networkId address dnsName protocol port role notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "serviceId": {
+        "type": "reference",
+        "references": [
+          "services"
+        ],
+        "requiredReference": true
+      },
+      "instanceId": {
+        "type": "reference",
+        "references": [
+          "serviceInstances"
+        ],
+        "requiredReference": false
+      },
+      "interfaceId": {
+        "type": "reference",
+        "references": [
+          "interfaces"
+        ],
+        "requiredReference": false
+      },
+      "networkId": {
+        "type": "reference",
+        "references": [
+          "networks"
+        ],
+        "requiredReference": false
+      },
+      "address": {
+        "type": "string"
+      },
+      "dnsName": {
+        "type": "string"
+      },
+      "protocol": {
+        "type": "string"
+      },
+      "port": {
+        "type": "string"
+      },
+      "role": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "resolverAssignments": {
+    "label": "Resolver assignments",
+    "required": "id name clientId resolverEndpointIds searchDomains notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "clientId": {
+        "type": "reference",
+        "references": [
+          "devices",
+          "services",
+          "serviceInstances",
+          "endpoints"
+        ],
+        "requiredReference": true
+      },
+      "resolverEndpointIds": {
+        "type": "references",
+        "references": [
+          "endpoints"
+        ]
+      },
+      "searchDomains": {
+        "type": "strings"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "serviceDependencies": {
+    "label": "Service dependencies",
+    "required": "id name fromServiceId toServiceId kind requirement notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "fromServiceId": {
+        "type": "reference",
+        "references": [
+          "services"
+        ],
+        "requiredReference": true
+      },
+      "toServiceId": {
+        "type": "reference",
+        "references": [
+          "services"
+        ],
+        "requiredReference": true
+      },
+      "kind": {
+        "type": "enum",
+        "options": [
+          "Startup",
+          "Runtime",
+          "Optional",
+          "Fallback"
+        ]
+      },
+      "requirement": {
+        "type": "enum",
+        "options": [
+          "All",
+          "Any"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "directoryObjects": {
+    "label": "Directory containers",
+    "required": "id name identityId parentId kind notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "identityId": {
+        "type": "reference",
+        "references": [
+          "identity"
+        ],
+        "requiredReference": true
+      },
+      "parentId": {
+        "type": "reference",
+        "references": [
+          "directoryObjects"
+        ],
+        "requiredReference": false
+      },
+      "kind": {
+        "type": "enum",
+        "options": [
+          "OU",
+          "Container"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "principals": {
+    "label": "Directory principals",
+    "required": "id name identityId kind nativeId notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "identityId": {
+        "type": "reference",
+        "references": [
+          "identity"
+        ],
+        "requiredReference": true
+      },
+      "kind": {
+        "type": "enum",
+        "options": [
+          "User",
+          "Service account",
+          "Computer"
+        ]
+      },
+      "nativeId": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "containerId": {
+        "type": "reference",
+        "references": [
+          "directoryObjects"
+        ],
+        "requiredReference": false
+      }
+    }
+  },
+  "accessMappings": {
+    "label": "Access mappings",
+    "required": "id name principalId serviceId role resource permission notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "principalId": {
+        "type": "reference",
+        "references": [
+          "principals",
+          "groups"
+        ],
+        "requiredReference": true
+      },
+      "serviceId": {
+        "type": "reference",
+        "references": [
+          "services"
+        ],
+        "requiredReference": true
+      },
+      "role": {
+        "type": "string"
+      },
+      "resource": {
+        "type": "string"
+      },
+      "permission": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "flows": {
+    "label": "Communication flows",
+    "required": "id name sourceId destinationId sourceInterfaceId protocol ports direction purpose zoneIds enforcementDeviceIds policyIds requirementIds notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "sourceId": {
+        "type": "reference",
+        "references": [
+          "nodes"
+        ],
+        "requiredReference": true
+      },
+      "destinationId": {
+        "type": "reference",
+        "references": [
+          "nodes"
+        ],
+        "requiredReference": true
+      },
+      "sourceInterfaceId": {
+        "type": "reference",
+        "references": [
+          "interfaces"
+        ],
+        "requiredReference": false
+      },
+      "protocol": {
+        "type": "string"
+      },
+      "ports": {
+        "type": "string"
+      },
+      "direction": {
+        "type": "enum",
+        "options": [
+          "Initiated",
+          "Bidirectional"
+        ]
+      },
+      "purpose": {
+        "type": "string"
+      },
+      "zoneIds": {
+        "type": "references",
+        "references": [
+          "securityZones"
+        ]
+      },
+      "enforcementDeviceIds": {
+        "type": "references",
+        "references": [
+          "devices"
+        ]
+      },
+      "policyIds": {
+        "type": "references",
+        "references": [
+          "policies"
+        ]
+      },
+      "requirementIds": {
+        "type": "references",
+        "references": [
+          "requirements"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "policies": {
+    "label": "Network policies",
+    "required": "id name sourceZoneId destinationZoneId sourceIds destinationIds protocol ports action enforcementDeviceId ruleReference owner notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "sourceZoneId": {
+        "type": "reference",
+        "references": [
+          "securityZones"
+        ],
+        "requiredReference": false
+      },
+      "destinationZoneId": {
+        "type": "reference",
+        "references": [
+          "securityZones"
+        ],
+        "requiredReference": false
+      },
+      "sourceIds": {
+        "type": "references",
+        "references": [
+          "nodes"
+        ]
+      },
+      "destinationIds": {
+        "type": "references",
+        "references": [
+          "nodes"
+        ]
+      },
+      "protocol": {
+        "type": "string"
+      },
+      "ports": {
+        "type": "string"
+      },
+      "action": {
+        "type": "enum",
+        "options": [
+          "Allow",
+          "Deny",
+          "Review"
+        ]
+      },
+      "enforcementDeviceId": {
+        "type": "reference",
+        "references": [
+          "devices"
+        ],
+        "requiredReference": false
+      },
+      "ruleReference": {
+        "type": "string"
+      },
+      "owner": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "requirements": {
+    "label": "Requirements",
+    "required": "id name description owner priority relatedIds decisionIds acceptanceCriteria notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "owner": {
+        "type": "string"
+      },
+      "priority": {
+        "type": "string"
+      },
+      "relatedIds": {
+        "type": "references",
+        "references": [
+          "entities"
+        ]
+      },
+      "decisionIds": {
+        "type": "references",
+        "references": [
+          "decisions"
+        ]
+      },
+      "acceptanceCriteria": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "verificationTests": {
+    "label": "Verification tests",
+    "required": "id name requirementIds relatedIds procedure expectedResult actualResult result performedBy performedAt evidenceIds notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "requirementIds": {
+        "type": "references",
+        "references": [
+          "requirements"
+        ]
+      },
+      "relatedIds": {
+        "type": "references",
+        "references": [
+          "entities"
+        ]
+      },
+      "procedure": {
+        "type": "string"
+      },
+      "expectedResult": {
+        "type": "string"
+      },
+      "actualResult": {
+        "type": "string"
+      },
+      "result": {
+        "type": "enum",
+        "options": [
+          "Not run",
+          "Pass",
+          "Fail",
+          "Blocked"
+        ]
+      },
+      "performedBy": {
+        "type": "string"
+      },
+      "performedAt": {
+        "type": "string"
+      },
+      "evidenceIds": {
+        "type": "references",
+        "references": [
+          "evidence"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "observations": {
+    "label": "As-built observations",
+    "required": "id name entityId field value source observedAt observedBy evidenceIds notes status",
+    "fields": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "entityId": {
+        "type": "reference",
+        "references": [
+          "entities"
+        ],
+        "requiredReference": true
+      },
+      "field": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      },
+      "source": {
+        "type": "string"
+      },
+      "observedAt": {
+        "type": "string"
+      },
+      "observedBy": {
+        "type": "string"
+      },
+      "evidenceIds": {
+        "type": "references",
+        "references": [
+          "evidence"
+        ]
+      },
+      "notes": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "devices": {
+    "label": "Equipment",
+    "required": "id name type owner status networkId rackU height notes",
+    "fields": {
+      "rackId": {
+        "type": "reference",
+        "references": [
+          "racks"
+        ],
+        "requiredReference": false
+      },
+      "deviceKind": {
+        "type": "enum",
+        "options": [
+          "Physical",
+          "Hypervisor",
+          "VM",
+          "Appliance",
+          "Workstation"
+        ]
+      },
+      "failureDomainIds": {
+        "type": "references",
+        "references": [
+          "failureDomains"
+        ]
+      },
+      "model": {
+        "type": "string"
+      },
+      "panelImage": {
+        "type": "string"
+      }
+    }
+  },
+  "networks": {
+    "label": "Networks",
+    "required": "id name cidr vlan purpose owner status",
+    "fields": {
+      "vrfId": {
+        "type": "reference",
+        "references": [
+          "vrfs"
+        ],
+        "requiredReference": false
+      },
+      "zoneId": {
+        "type": "reference",
+        "references": [
+          "securityZones"
+        ],
+        "requiredReference": false
+      },
+      "gateway": {
+        "type": "string"
+      }
+    }
+  },
+  "interfaces": {
+    "label": "Interfaces",
+    "required": "id name deviceId networkId address mac speed status notes",
+    "fields": {
+      "mode": {
+        "type": "enum",
+        "options": [
+          "Unspecified",
+          "Access",
+          "Trunk",
+          "Routed",
+          "Virtual",
+          "Bond"
+        ]
+      },
+      "untaggedNetworkId": {
+        "type": "reference",
+        "references": [
+          "networks"
+        ],
+        "requiredReference": false
+      },
+      "taggedNetworkIds": {
+        "type": "references",
+        "references": [
+          "networks"
+        ]
+      },
+      "aggregateId": {
+        "type": "reference",
+        "references": [
+          "interfaces"
+        ],
+        "requiredReference": false
+      },
+      "gateway": {
+        "type": "string"
+      },
+      "mtu": {
+        "type": "integer",
+        "blank": true,
+        "minimum": 1,
+        "maximum": 65535
+      }
+    }
+  },
+  "groups": {
+    "label": "Directory groups",
+    "required": "id name identityId parentId kind memberIds accessIds notes status",
+    "fields": {
+      "containerId": {
+        "type": "reference",
+        "references": [
+          "directoryObjects"
+        ],
+        "requiredReference": false
+      }
+    }
+  }
+}
