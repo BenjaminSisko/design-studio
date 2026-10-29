@@ -1,0 +1,692 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "id": "project-aa89bf13-4f81-4bb8-a899-c58d1e4dddf9",
+    "name": "SAMPLE-Engineering + IT integration",
+    "description": "Fictional meeting starter. Every item is proposed; replace sample records with the team’s verified design.",
+    "phase": "Concept",
+    "author": "",
+    "rackUnits": 42,
+    "rackName": "SAMPLE-INFRA-01",
+    "classification": "",
+    "classificationColor": "#29624b"
+  },
+  "devices": [
+    {
+      "id": "sample-device-firewall",
+      "name": "SAMPLE-Boundary gateway",
+      "type": "Firewall",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-management",
+      "rackU": 42,
+      "height": 1,
+      "notes": "Placeholder. Hardware and policy are undecided."
+    },
+    {
+      "id": "sample-device-switch",
+      "name": "SAMPLE-Infrastructure switch",
+      "type": "Switch",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-management",
+      "rackU": 40,
+      "height": 1,
+      "notes": "Placeholder placement; port count and uplinks are undecided."
+    },
+    {
+      "id": "sample-device-compute",
+      "name": "SAMPLE-Shared services host",
+      "type": "Server",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-infrastructure",
+      "rackU": 36,
+      "height": 2,
+      "notes": "Placeholder compute capacity for proposed services."
+    },
+    {
+      "id": "sample-device-security",
+      "name": "SAMPLE-Security services host",
+      "type": "Server",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-infrastructure",
+      "rackU": 33,
+      "height": 2,
+      "notes": "Placeholder for monitoring and security services."
+    },
+    {
+      "id": "sample-device-backup",
+      "name": "SAMPLE-Backup target",
+      "type": "Storage",
+      "owner": "IT",
+      "status": "Proposed",
+      "networkId": "sample-net-infrastructure",
+      "rackU": 30,
+      "height": 2,
+      "notes": "Backup architecture and retention are undecided."
+    },
+    {
+      "id": "sample-device-workstation",
+      "name": "SAMPLE-Engineering workstation",
+      "type": "Workstation",
+      "owner": "Engineering",
+      "status": "Proposed",
+      "networkId": "sample-net-engineering",
+      "rackU": null,
+      "height": 1,
+      "notes": "Illustrative endpoint; ownership and support boundary need agreement."
+    },
+    {
+      "id": "sample-device-linux",
+      "name": "SAMPLE-Engineering Linux node",
+      "type": "Linux host",
+      "owner": "Engineering",
+      "status": "Proposed",
+      "networkId": "sample-net-engineering",
+      "rackU": null,
+      "height": 1,
+      "notes": "Operating system version and identity integration are undecided."
+    },
+    {
+      "id": "sample-device-instrument",
+      "name": "SAMPLE-Test instrument",
+      "type": "Test equipment",
+      "owner": "Engineering",
+      "status": "Proposed",
+      "networkId": "sample-net-engineering",
+      "rackU": null,
+      "height": 1,
+      "notes": "Connectivity, protocols, and support constraints need confirmation."
+    }
+  ],
+  "networks": [
+    {
+      "id": "sample-net-engineering",
+      "name": "SAMPLE-Engineering segment",
+      "cidr": "",
+      "vlan": "",
+      "purpose": "Engineering hosts and test equipment; addressing and controls undecided.",
+      "owner": "Engineering",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-net-infrastructure",
+      "name": "SAMPLE-Infrastructure segment",
+      "cidr": "",
+      "vlan": "",
+      "purpose": "Shared IT services; addressing and controls undecided.",
+      "owner": "IT",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-net-management",
+      "name": "SAMPLE-Management segment",
+      "cidr": "",
+      "vlan": "",
+      "purpose": "Administration plane; addressing and access path undecided.",
+      "owner": "IT",
+      "status": "Proposed"
+    }
+  ],
+  "services": [
+    {
+      "id": "sample-service-identity",
+      "name": "SAMPLE-Identity",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Open choice: evaluate Red Hat IdM and Microsoft Active Directory using team requirements.",
+      "dependsOn": [],
+      "kind": "Identity",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-dns",
+      "name": "SAMPLE-DNS",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Resolve namespace, authority, forwarding, and ownership in the design workshop.",
+      "dependsOn": [],
+      "kind": "DNS",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-ntp",
+      "name": "SAMPLE-Time service",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Choose authoritative sources, client configuration, and disconnected operation requirements.",
+      "dependsOn": [],
+      "kind": "Time",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-logging",
+      "name": "SAMPLE-Central logging",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-security",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Choose collection scope, retention, platform, and operational owner.",
+      "dependsOn": [],
+      "kind": "Logging",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-security",
+      "name": "SAMPLE-Security management",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-security",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Define required security services and endpoint responsibilities.",
+      "dependsOn": [],
+      "kind": "Security",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-backup",
+      "name": "SAMPLE-Backup and recovery",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-backup",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Define scope, recovery objectives, platform, and restore verification.",
+      "dependsOn": [],
+      "kind": "Backup",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-matlab",
+      "name": "SAMPLE-MATLAB application",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Fictional application placeholder. Proposed license dependency needs verification; vendor, endpoint, and ports remain unassigned.",
+      "dependsOn": [],
+      "kind": "Application",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-atlassian",
+      "name": "SAMPLE-Atlassian application",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Fictional application placeholder. Proposed identity and DNS dependencies need verification; no licensing architecture is assumed.",
+      "dependsOn": [
+        "sample-service-identity",
+        "sample-service-dns"
+      ],
+      "kind": "Application",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    },
+    {
+      "id": "sample-service-license",
+      "name": "SAMPLE-License management service",
+      "platform": "Undecided",
+      "owner": "IT",
+      "status": "Proposed",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "notes": "Fictional service placeholder. Confirm product requirements and whether a shared license service is needed; do not infer vendor defaults.",
+      "dependsOn": [],
+      "kind": "License",
+      "endpoint": "",
+      "protocol": "",
+      "port": "",
+      "licenseManager": "",
+      "redundancy": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "sample-interface-fw-uplink",
+      "name": "SAMPLE-Gateway uplink",
+      "deviceId": "sample-device-firewall",
+      "networkId": "sample-net-management",
+      "address": "",
+      "mac": "",
+      "speed": "Undecided",
+      "status": "Proposed",
+      "notes": "Port identifier and addressing need confirmation."
+    },
+    {
+      "id": "sample-interface-switch-uplink",
+      "name": "SAMPLE-Switch uplink",
+      "deviceId": "sample-device-switch",
+      "networkId": "sample-net-management",
+      "address": "",
+      "mac": "",
+      "speed": "Undecided",
+      "status": "Proposed",
+      "notes": "Port identifier and addressing need confirmation."
+    },
+    {
+      "id": "sample-interface-services",
+      "name": "SAMPLE-Services host interface",
+      "deviceId": "sample-device-compute",
+      "networkId": "sample-net-infrastructure",
+      "address": "",
+      "mac": "",
+      "speed": "Undecided",
+      "status": "Proposed",
+      "notes": "Connectivity requirements need confirmation."
+    },
+    {
+      "id": "sample-interface-linux",
+      "name": "SAMPLE-Engineering Linux interface",
+      "deviceId": "sample-device-linux",
+      "networkId": "sample-net-engineering",
+      "address": "",
+      "mac": "",
+      "speed": "Undecided",
+      "status": "Proposed",
+      "notes": "Engineering-owned endpoint; port and addressing need confirmation."
+    }
+  ],
+  "links": [
+    {
+      "id": "sample-link-boundary",
+      "from": "sample-device-firewall",
+      "to": "sample-device-switch",
+      "fromInterfaceId": "sample-interface-fw-uplink",
+      "toInterfaceId": "sample-interface-switch-uplink",
+      "label": "SAMPLE-Uplink — design pending",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-link-engineering",
+      "from": "sample-net-engineering",
+      "to": "sample-device-firewall",
+      "label": "SAMPLE-Engineering connection — policy pending",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-link-compute",
+      "from": "sample-device-switch",
+      "to": "sample-device-compute",
+      "label": "SAMPLE-Services connection",
+      "status": "Proposed"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "sample-decision-identity",
+      "title": "SAMPLE-Identity platform selection",
+      "status": "Open",
+      "owner": "",
+      "due": "",
+      "context": "Compare the candidate platforms against the team’s verified requirements. Capture evidence and constraints before recording a selection.",
+      "options": [
+        {
+          "id": "sample-option-idm",
+          "label": "Red Hat IdM",
+          "pros": "",
+          "cons": ""
+        },
+        {
+          "id": "sample-option-ad",
+          "label": "Microsoft Active Directory",
+          "pros": "",
+          "cons": ""
+        },
+        {
+          "id": "sample-option-other",
+          "label": "Other / combined approach",
+          "pros": "",
+          "cons": ""
+        }
+      ],
+      "selectedOptionId": "",
+      "rationale": "",
+      "relatedIds": [
+        "sample-service-identity",
+        "sample-device-linux"
+      ]
+    },
+    {
+      "id": "sample-decision-dns",
+      "title": "SAMPLE-DNS design and ownership",
+      "status": "Open",
+      "owner": "",
+      "due": "",
+      "context": "Agree on namespace, authoritative zones, forwarding, and the support owner. No design is selected.",
+      "options": [
+        {
+          "id": "sample-option-dns-integrated",
+          "label": "Identity-integrated DNS design",
+          "pros": "",
+          "cons": ""
+        },
+        {
+          "id": "sample-option-dns-separate",
+          "label": "Separately managed DNS design",
+          "pros": "",
+          "cons": ""
+        }
+      ],
+      "selectedOptionId": "",
+      "rationale": "",
+      "relatedIds": [
+        "sample-service-dns",
+        "sample-service-identity"
+      ]
+    },
+    {
+      "id": "sample-decision-boundary",
+      "title": "SAMPLE-Engineering / IT service boundary",
+      "status": "Open",
+      "owner": "",
+      "due": "",
+      "context": "Define which team owns hosts, shared services, incident response, and approved communication paths.",
+      "options": [
+        {
+          "id": "sample-option-boundary-a",
+          "label": "Document candidate A in the workshop",
+          "pros": "",
+          "cons": ""
+        },
+        {
+          "id": "sample-option-boundary-b",
+          "label": "Document candidate B in the workshop",
+          "pros": "",
+          "cons": ""
+        }
+      ],
+      "selectedOptionId": "",
+      "rationale": "",
+      "relatedIds": [
+        "sample-net-engineering",
+        "sample-net-infrastructure",
+        "sample-device-firewall"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "sample-task-inventory",
+      "title": "SAMPLE-Confirm equipment and existing diagrams",
+      "owner": "Engineering + IT",
+      "status": "Open",
+      "due": "",
+      "relatedId": "sample-device-instrument"
+    },
+    {
+      "id": "sample-task-identity",
+      "title": "SAMPLE-Capture identity requirements and platform constraints",
+      "owner": "",
+      "status": "Open",
+      "due": "",
+      "relatedId": "sample-decision-identity"
+    },
+    {
+      "id": "sample-task-dns",
+      "title": "SAMPLE-Document DNS namespace and ownership options",
+      "owner": "",
+      "status": "Open",
+      "due": "",
+      "relatedId": "sample-decision-dns"
+    },
+    {
+      "id": "sample-task-recovery",
+      "title": "SAMPLE-Agree recovery objectives and acceptance criteria",
+      "owner": "",
+      "status": "Open",
+      "due": "",
+      "relatedId": "sample-service-backup"
+    }
+  ],
+  "evidence": [],
+  "comments": [],
+  "diagrams": [
+    {
+      "id": "sample-diagram-integration",
+      "name": "SAMPLE-Engineering + IT overview",
+      "nodeIds": [
+        "sample-device-firewall",
+        "sample-device-switch",
+        "sample-device-compute",
+        "sample-device-security",
+        "sample-device-backup",
+        "sample-device-workstation",
+        "sample-device-linux",
+        "sample-device-instrument",
+        "sample-net-engineering",
+        "sample-net-infrastructure",
+        "sample-net-management",
+        "sample-service-identity",
+        "sample-service-dns",
+        "sample-service-ntp",
+        "sample-service-logging",
+        "sample-service-security",
+        "sample-service-backup",
+        "sample-service-matlab",
+        "sample-service-atlassian",
+        "sample-service-license"
+      ],
+      "notes": "Fictional proposed architecture. Use the model to capture the real workshop outcomes."
+    },
+    {
+      "id": "sample-diagram-logical",
+      "name": "SAMPLE-Logical services",
+      "nodeIds": [
+        "sample-service-identity",
+        "sample-service-dns",
+        "sample-service-matlab",
+        "sample-service-atlassian",
+        "sample-service-license",
+        "sample-identity-workforce",
+        "sample-group-engineering",
+        "sample-group-test",
+        "sample-dns-zone",
+        "sample-dns-matlab",
+        "sample-dns-atlassian",
+        "sample-dns-license"
+      ],
+      "notes": "Proposed identity structure, DNS targets, application access, and license dependency. Names and relationships follow stable IDs across edits."
+    }
+  ],
+  "identity": [
+    {
+      "id": "sample-identity-workforce",
+      "name": "SAMPLE-Workforce identity",
+      "serviceId": "sample-service-identity",
+      "implementation": "Undecided",
+      "domain": "",
+      "realm": "",
+      "notes": "Proposed logical identity structure. Red Hat IdM and Microsoft Active Directory remain candidates; no provider capabilities are assumed.",
+      "status": "Proposed"
+    }
+  ],
+  "groups": [
+    {
+      "id": "sample-group-engineering",
+      "name": "SAMPLE-Engineering",
+      "identityId": "sample-identity-workforce",
+      "parentId": "",
+      "kind": "Group",
+      "memberIds": [
+        "sample-device-workstation",
+        "sample-device-linux"
+      ],
+      "accessIds": [
+        "sample-service-matlab",
+        "sample-service-atlassian"
+      ],
+      "notes": "Proposed membership and application access for team review; no authorization is granted by this diagram.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-group-test",
+      "name": "SAMPLE-Test team",
+      "identityId": "sample-identity-workforce",
+      "parentId": "sample-group-engineering",
+      "kind": "Group",
+      "memberIds": [
+        "sample-device-instrument"
+      ],
+      "accessIds": [
+        "sample-service-matlab"
+      ],
+      "notes": "Proposed container/member structure; validate feasibility after choosing an identity platform.",
+      "status": "Proposed"
+    }
+  ],
+  "dnsZones": [
+    {
+      "id": "sample-dns-zone",
+      "name": "SAMPLE-sample.invalid",
+      "serviceId": "sample-service-dns",
+      "kind": "Forward",
+      "notes": "Fictional sample.invalid namespace. Actual namespace, zone authority, and forwarding remain undecided.",
+      "status": "Proposed"
+    }
+  ],
+  "dnsRecords": [
+    {
+      "id": "sample-dns-matlab",
+      "name": "SAMPLE-matlab.sample.invalid",
+      "zoneId": "sample-dns-zone",
+      "type": "A",
+      "value": "",
+      "targetId": "sample-service-matlab",
+      "ttl": "",
+      "notes": "Proposed record target only. Address and TTL are unassigned.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-dns-atlassian",
+      "name": "SAMPLE-atlassian.sample.invalid",
+      "zoneId": "sample-dns-zone",
+      "type": "A",
+      "value": "",
+      "targetId": "sample-service-atlassian",
+      "ttl": "",
+      "notes": "Proposed record target only. Address and TTL are unassigned.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-dns-license",
+      "name": "SAMPLE-license.sample.invalid",
+      "zoneId": "sample-dns-zone",
+      "type": "A",
+      "value": "",
+      "targetId": "sample-service-license",
+      "ttl": "",
+      "notes": "Proposed record target only. Address and TTL are unassigned.",
+      "status": "Proposed"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "sample-relationship-matlab-license",
+      "from": "sample-service-matlab",
+      "to": "sample-service-license",
+      "kind": "uses-license",
+      "label": "SAMPLE-MATLAB → proposed license service",
+      "protocol": "",
+      "port": "",
+      "endpoint": "",
+      "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-relationship-atlassian-identity",
+      "from": "sample-service-atlassian",
+      "to": "sample-identity-workforce",
+      "kind": "authenticates",
+      "label": "SAMPLE-Atlassian → proposed identity",
+      "protocol": "",
+      "port": "",
+      "endpoint": "",
+      "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-relationship-atlassian-dns",
+      "from": "sample-service-atlassian",
+      "to": "sample-service-dns",
+      "kind": "resolves",
+      "label": "SAMPLE-Atlassian → proposed DNS",
+      "protocol": "",
+      "port": "",
+      "endpoint": "",
+      "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-relationship-engineering-matlab",
+      "from": "sample-group-engineering",
+      "to": "sample-service-matlab",
+      "kind": "access",
+      "label": "SAMPLE-Engineering → proposed MATLAB access",
+      "protocol": "",
+      "port": "",
+      "endpoint": "",
+      "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
+      "status": "Proposed"
+    },
+    {
+      "id": "sample-relationship-engineering-atlassian",
+      "from": "sample-group-engineering",
+      "to": "sample-service-atlassian",
+      "kind": "access",
+      "label": "SAMPLE-Engineering → proposed Atlassian access",
+      "protocol": "",
+      "port": "",
+      "endpoint": "",
+      "notes": "Proposed relationship; confirm implementation and test before treating as verified.",
+      "status": "Proposed"
+    }
+  ]
+}
